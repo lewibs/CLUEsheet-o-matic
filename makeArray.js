@@ -12,7 +12,7 @@ function makeArray(r,c) {
 	// Put items in the 2D array
 	for (let r = 0; r < theArray.length; r++) {
 		for (let c = 0; c < theArray[0].length; c++) {
-			theArray[r][c]= null;
+			theArray[r][c]= [null,0];
 		}
 	}
 	
