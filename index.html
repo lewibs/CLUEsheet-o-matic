@@ -10,8 +10,6 @@
 <!-- Don't use this in production: -->
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<script src="makeArray.js"></script>
-
 <style>
 	table, th, td {
 		border: 1px solid black;
@@ -43,7 +41,7 @@
 		let weapon = makeArray(6,6);
 		let room = makeArray(8,6);
 		let player = makeArray(6,1);
-		let cards = null;
+		let cards = "";
 		
 		let cardsObj = {
 			//people
@@ -54,21 +52,21 @@
 			"mp" : 4,
 			"pp" : 5,
 			//weapons
-			"cs" : 7,
-			"kn" : 8,
-			"ro" : 9,
-			"re" : 10,
-			"lp" : 11,
-			"wr" : 12,
+			"cs" : 6,
+			"kn" : 7,
+			"ro" : 8,
+			"re" : 9,
+			"lp" : 10,
+			"wr" : 11,
 			//rooms
-			"ba" : 13,
-			"bi" : 14,
-			"co" : 15,
-			"di" : 16,
-			"ha" : 17,
-			"ki" : 18,
-			"li" : 19,
-			"st" : 20,
+			"ba" : 12,
+			"bi" : 13,
+			"co" : 14,
+			"di" : 15,
+			"ha" : 16,
+			"ki" : 17,
+			"li" : 18,
+			"st" : 19
 		}
 		
 		let home = 	<div>
@@ -132,14 +130,49 @@
 			return object[key];
 		}
 		
+		function markSheet(playerInd,cardInd,mark) {
+			if(mark == "V"){
+				solveRow(cardInd);
+			}
+			
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				room[cardInd][playerInd][0] = mark;
+				//room[cardInd][playerInd][1] += 1;	
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				weapon[cardInd][playerInd][0] = mark;
+				//weapon[cardInd][playerInd][1] += 1;
+			} else {
+				suspect[cardInd][playerInd][0] = mark;
+				//suspect[cardInd][playerInd][1] += 1;
+			}
+		}
+		
+		function getCardInd(card){
+			return getValueByKey(cardsObj,card);
+		}
+		
 		function setCards() {
+			let playerInd = null;
+			let cardInd = null;
+			let type = null;
+			
 			cards = document.getElementById("cards").value;
-			cards = cards.split();
-			let player = cards[0];
-			let type = cards[1];
+			cards = cards.split(" ");
+			type = cards[1];
 			
 			if (type = "k") {
-				
+				playerInd = cards[0] - 1;
+				//if more then one card is given it is assumed that all the cards for that person is known
+				if (cards.length > 3) {
+					solveCol(playerInd);
+				}
+				//standard mark for each check
+				for (let i = 2; i < cards.length; i++) {
+					cardInd = getCardInd(cards[i]);
+					markSheet(playerInd,cardInd,"V");
+				}
 			} else if (type = "g") {
 				
 			}
@@ -452,6 +485,27 @@
 							</div>
 						</div>;	
 			ReactDOM.render(table,document.getElementById('table'));
+		}
+		
+		function makeArray(r,c) {
+			// Create a one dimensional array 
+			// capable of storing 3 objects
+			let  theArray = new Array(r); // Indices for the row
+			  
+			  
+			// Loop through the array, adding a 
+			// new array to each location
+			for (let i = 0; i < theArray.length; i++) { 
+				theArray[i] = new Array(c);// new arrays for the columns
+			} 
+			// Put items in the 2D array
+			for (let r = 0; r < theArray.length; r++) {
+				for (let c = 0; c < theArray[0].length; c++) {
+					theArray[r][c]= [null,null];
+				}
+			}
+			
+			return theArray;
 		}
 	</script>
 
