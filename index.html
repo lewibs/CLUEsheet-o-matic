@@ -22,6 +22,13 @@
 		background-color:#339966;
 		color:white;
 	}
+	
+	.center {
+		margin: auto;
+		width: 80%;
+		border: 1px solid black;
+		padding: 10px;
+	}
 </style>
 
 
@@ -31,41 +38,161 @@
 	<div id="table"></div>
 	<div id="info"></div>
 	
-	
-	
-	
 	<script type="text/babel">
 		let suspect = makeArray(6,6);
 		let weapon = makeArray(6,6);
 		let room = makeArray(8,6);
 		let player = makeArray(6,1);
+		let cards = null;
 		
-		let home = 	<center>
-						<h1>SHEET-O-MATIC</h1>
-						<p>By: Benjamin Lewis</p>
-						<input type="text" name="name" id="p1" placeholder="player 1 initials" />
-						<br />
-						<input type="text" name="name" id="p2" placeholder="player 2 initials" />
-						<br />
-						<input type="text" name="name" id="p3" placeholder="player 3 initials" />
-						<br />
-						<input type="text" name="name" id="p4" placeholder="player 4 initials" />
-						<br />
-						<input type="text" name="name" id="p5" placeholder="player 5 initials" />
-						<br />
-						<input type="text" name="name" id="p6" placeholder="player 6 initials" />
-						<br />
-						<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
-						<br />
-						<button onClick={startGame}>Start Game</button>
-						<br />
-						<br />
-						<p>give a short info on how it works and how to play</p>
-					</center>;
+		let cardsObj = {
+			//people
+			"ms" : 0,
+			"cm" : 1,
+			"mw" : 2,
+			"mg" : 3,
+			"mp" : 4,
+			"pp" : 5,
+			//weapons
+			"cs" : 7,
+			"kn" : 8,
+			"ro" : 9,
+			"re" : 10,
+			"lp" : 11,
+			"wr" : 12,
+			//rooms
+			"ba" : 13,
+			"bi" : 14,
+			"co" : 15,
+			"di" : 16,
+			"ha" : 17,
+			"ki" : 18,
+			"li" : 19,
+			"st" : 20,
+		}
+		
+		let home = 	<div>
+						<center>
+							<h1>SHEET-O-MATIC</h1>
+							<p>By: Benjamin Lewis</p>
+							<input type="text" name="name" id="p1" placeholder="player 1 initials" />
+							<br />
+							<input type="text" name="name" id="p2" placeholder="player 2 initials" />
+							<br />
+							<input type="text" name="name" id="p3" placeholder="player 3 initials" />
+							<br />
+							<input type="text" name="name" id="p4" placeholder="player 4 initials" />
+							<br />
+							<input type="text" name="name" id="p5" placeholder="player 5 initials" />
+							<br />
+							<input type="text" name="name" id="p6" placeholder="player 6 initials" />
+							<br />
+							<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
+							<br />
+							<button onClick={startGame}>Start Game</button>
+							<br />
+							<br />
+						</center>
+						<p class="center">
+							<b>how to use:</b>
+							<br />
+							<br />
+							Input the initials of the users. If there is no one playing a spot leave it blank. 
+							<br />
+							example: BL
+							<br />
+							<br />
+							There are 3 ways to input cards:
+							<br />
+							<br />
+							The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
+							<br />
+							example: 1 k ms cs ba
+							<br />
+							<br />
+							The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
+							<br />
+							example: 1 g pp lp bi 5 pp card shown
+							<br />
+							example: 1 g pp lp bi 5 unknown shown
+							<br />
+							example: 1 g pp lp bi 1 no show
+						</p>
+					</div>;
 			
 		ReactDOM.render(home,document.getElementById('input'));
 		
 		//functions
+		
+		function getKeyByValue(object, value) {
+			return Object.keys(object).find(key => object[key] === value);
+		}
+		
+		function getValueByKey(object, key) {
+			return object[key];
+		}
+		
+		function setCards() {
+			cards = document.getElementById("cards").value;
+			cards = cards.split();
+			let player = cards[0];
+			let type = cards[1];
+			
+			if (type = "k") {
+				
+			} else if (type = "g") {
+				
+			}
+		}
+		
+		function blankPlayers() {
+			for (let i = 0; i < 6; i++) {
+				if (player[i]=="") {
+					solveCol(i);
+				}
+			}
+		}
+		
+		function solveCol(playerInd) {
+			for (let i = 0; i<6; i++) {
+				if( suspect[i][playerInd][0] != "V" ) {
+					suspect[i][playerInd][0] = "X";
+				}
+				if( weapon[i][playerInd][0] != "V" ) {
+					weapon[i][playerInd][0] = "X";
+				}
+			}
+			
+			for (let i = 0; i<8; i++) {
+				if( room[i][playerInd][0] != "V" ) {
+					room[i][playerInd][0] = "X";
+				}
+			}
+		}
+		
+		function solveRow(cardInd){
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				for (let i = 0; i<6; i++) {
+					if( room[cardInd][i][0] != "V" ) {
+						room[cardInd][i][0] = "X";
+					}
+				}
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				for (let i = 0; i<6; i++) {
+					if( weapon[cardInd][i][0] != "V" ) {
+						weapon[cardInd][i][0] = "X";
+					}
+				}
+			} else {
+				for (let i = 0; i<6; i++) {
+					if( suspect[cardInd][i][0] != "V" ) {
+						suspect[cardInd][i][0] = "X";
+					}
+				}
+			}
+		}
 		
 		function startGame() {
 			player[0] = document.getElementById("p1").value;
@@ -74,12 +201,12 @@
 			player[3] = document.getElementById("p4").value;
 			player[4] = document.getElementById("p5").value;
 			player[5] = document.getElementById("p6").value;
-			let cards = document.getElementById("cards").value;
-			update(cards);
+			blankPlayers();
+			update();
 		}
 		
-		function update(cards) {
-			//setCards(cards);
+		function update() {
+			setCards();
 			updateTable();
 			updateInput();
 			updateInfo();
@@ -92,7 +219,7 @@
 			
 			let info = 	<div>
 							<div id="move">SUDGESTED MOVE: {move}</div>
-							<div id="answer">POSSIBLE ANSWER: {answer} {likelihood}% likelihood</div>
+							<div id="answer">POSSIBLE ANSWER: {answer} {likelihood}%</div>
 						</div>;
 			
 			ReactDOM.render(info,document.getElementById('info'));
@@ -113,12 +240,12 @@
 								<table style={{width:"100%"}}>
 									<tr style={{"font-weigh":"bold"}}>
 										<td style={{"text-align":"right"}}>Players:</td>
-										<td style={{"background-color":"#ff9999"}}>1.{player[0][0]}</td>
-										<td style={{"background-color":"#ffdb4d"}}>2.{player[1][0]}</td>
-										<td style={{"background-color":"#ffffff"}}>3.{player[2][0]}</td>
-										<td style={{"background-color":"#66ff66"}}>4.{player[3][0]}</td>
-										<td style={{"background-color":"#6699ff"}}>5.{player[4][0]}</td>
-										<td style={{"background-color":"#d966ff"}}>6.{player[5][0]}</td>
+										<td style={{"background-color":"#ff9999"}}>1.{player[0]}</td>
+										<td style={{"background-color":"#ffdb4d"}}>2.{player[1]}</td>
+										<td style={{"background-color":"#ffffff"}}>3.{player[2]}</td>
+										<td style={{"background-color":"#66ff66"}}>4.{player[3]}</td>
+										<td style={{"background-color":"#6699ff"}}>5.{player[4]}</td>
+										<td style={{"background-color":"#d966ff"}}>6.{player[5]}</td>
 									</tr>
 									
 									<th colspan="7">SUSPECTS</th>
@@ -192,52 +319,52 @@
 									
 									<tr>
 										<td>Knife (kn)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
-										<td>{weapon[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
-										<td>{weapon[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
-										<td>{weapon[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][0]}</td>
+										<td>{weapon[1][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][2]}</td>
+										<td>{weapon[1][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][4]}</td>
+										<td>{weapon[1][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Rope (ro)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
-										<td>{weapon[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
-										<td>{weapon[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
-										<td>{weapon[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][0]}</td>
+										<td>{weapon[2][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][2]}</td>
+										<td>{weapon[2][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][4]}</td>
+										<td>{weapon[2][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Revolver (re)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
-										<td>{weapon[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
-										<td>{weapon[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
-										<td>{weapon[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][0]}</td>
+										<td>{weapon[3][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][2]}</td>
+										<td>{weapon[3][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][4]}</td>
+										<td>{weapon[3][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Lead Pipe (lp)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
-										<td>{weapon[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
-										<td>{weapon[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
-										<td>{weapon[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][0]}</td>
+										<td>{weapon[4][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][2]}</td>
+										<td>{weapon[4][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][4]}</td>
+										<td>{weapon[4][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Wrench (wr)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
-										<td>{weapon[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
-										<td>{weapon[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
-										<td>{weapon[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][0]}</td>
+										<td>{weapon[5][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][2]}</td>
+										<td>{weapon[5][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][4]}</td>
+										<td>{weapon[5][5]}</td>
 									</tr>
 									
 									<th colspan="7">ROOMS</th>
@@ -254,72 +381,72 @@
 									
 									<tr>
 										<td>Billiard Room (bi)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][0]}</td>
+										<td>{room[1][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][2]}</td>
+										<td>{room[1][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][4]}</td>
+										<td>{room[1][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Conservatory (co)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][0]}</td>
+										<td>{room[2][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][2]}</td>
+										<td>{room[2][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][4]}</td>
+										<td>{room[2][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Dining Room (di)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][0]}</td>
+										<td>{room[3][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][2]}</td>
+										<td>{room[3][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][4]}</td>
+										<td>{room[3][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Hall (ha)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][0]}</td>
+										<td>{room[4][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][2]}</td>
+										<td>{room[4][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][4]}</td>
+										<td>{room[4][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Kitchen (ki)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][0]}</td>
+										<td>{room[5][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][2]}</td>
+										<td>{room[5][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][4]}</td>
+										<td>{room[5][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Library (li)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][0]}</td>
+										<td>{room[6][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][2]}</td>
+										<td>{room[6][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][4]}</td>
+										<td>{room[6][5]}</td>
 									</tr>
 									
 									<tr>
 										<td>Study (st)</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
-										<td>{room[0][1]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
-										<td>{room[0][3]}</td>
-										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
-										<td>{room[0][5]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][0]}</td>
+										<td>{room[7][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][2]}</td>
+										<td>{room[7][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][4]}</td>
+										<td>{room[7][5]}</td>
 									</tr>
 								</table>
 							</div>
