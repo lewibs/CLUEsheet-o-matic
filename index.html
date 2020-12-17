@@ -100,6 +100,8 @@
 							example: BL
 							<br />
 							<br />
+							All of the cards are indicated with their first two letters.
+							<br />
 							There are 3 ways to input cards:
 							<br />
 							<br />
@@ -154,15 +156,17 @@
 		}
 		
 		function setCards() {
-			let playerInd = null;
 			let cardInd = null;
-			let type = null;
+			let playerInd = null;
+			let player1Ind = null;
+			let player2Ind = null;
 			
 			cards = document.getElementById("cards").value;
 			cards = cards.split(" ");
-			type = cards[1];
 			
-			if (type = "k") {
+			let type = cards[1];
+			
+			if (type == "k") {
 				playerInd = cards[0] - 1;
 				//if more then one card is given it is assumed that all the cards for that person is known
 				if (cards.length > 3) {
@@ -173,8 +177,20 @@
 					cardInd = getCardInd(cards[i]);
 					markSheet(playerInd,cardInd,"V");
 				}
-			} else if (type = "g") {
+			} else if (type == "g") {
+				//example: 1 g pp lp bi 5 pp card shown
+				//example: 1 g pp lp bi 5 unknown shown
+				//example: 1 g pp lp bi 1 no show
 				
+				player1Ind = cards[0] - 1;
+				player2Ind = cards[5] - 1;
+				
+				if (typeof cards[6] != 'undefined') { // run this for when the card is shown
+					cardInd = getCardInd(cards[6]);
+					markSheet(player2Ind,cardInd, "V");
+				} else {
+				
+				}
 			}
 		}
 		
