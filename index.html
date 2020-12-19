@@ -1,3 +1,9 @@
+<!-- 
+Warning this is an unfinished project. The goal is to add advanced logic however that has not been added yet.
+Currently it serves as an auto filler spreadsheet. It uses bable which is why I kept it on one page rather then make
+multiple files as it allows global variables and easier communication  between functions.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
@@ -42,6 +48,10 @@
 		let room = makeArray(8,6);
 		let player = makeArray(6,1);
 		let cards = "";
+		let cardData = [];
+		let move = "no move";
+		let answer = "no answer";
+		let likelihood = 0;
 		const maybeCard = "?"; // this is the indicator if a card may be in that spot
 		const yesCard = "O"; // this is the indicator for if a card is in that spot
 		const noCard = "X"; //this is the indicator for if no card is in that spot
@@ -119,13 +129,98 @@
 							<br />
 							example: 1 g pp lp bi 5 unknown shown
 							<br />
-							example: 1 g pp lp bi 1 no show
+							example: 1 g pp lp bi 1 no show1 g ms cs bi 4
 						</p>
 					</div>;
 			
 		ReactDOM.render(home,document.getElementById('input'));
 		
 		//functions
+		
+		function think() {
+			//this one goes and checks all moves done to see if at any point a guess was made
+			//and the third card was the only unknown card
+			twoCardsKnown();
+		}
+		
+		function twoCardsKnown() {
+			//loop through the cardInd
+			let cardInd;
+			let playerInd;
+			for (let i = 0; i < cardData.length; i++) {
+				//split card
+				cards = cardData[i].split(" ");
+				//check if the card[5] exists and check that card[0] is not equal to card[5] and that the thing it is looking at is not a "k"
+				if (typeof cards[5] != 'undefined' && cards[0] != cards[5] && cards[1] == "g") {
+						//if it is not equal check if two of the cards are known but not the third
+						if (twoKnown([cards[2],cards[3],cards[4]])) {
+							cardInd = cardsObj[returnUnknownCard([cards[2],cards[3],cards[4]])];
+							playerInd = cards[5];
+							console.log(playerInd);
+							console.log(cardInd);
+							console.log(yesCard);
+							markSheet(playerInd,cardInd,yesCard);
+						}
+				}
+			}
+		}
+		
+		function twoKnown(cards) {
+			cards = [checkCardFor(cards[0],yesCard),checkCardFor(cards[1],yesCard),checkCardFor(cards[2],yesCard)];
+			let count = cards.filter(Boolean).length;
+			if (count == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		function returnUnknownCard(cards) {
+			let cardsBool = [checkCardFor(cards[0],yesCard),checkCardFor(cards[1],yesCard),checkCardFor(cards[2],yesCard)];
+			let count = cardsBool.filter(Boolean).length;
+			if (count == 2) {
+				return cards[cardsBool.indexOf(false)];
+			} else {
+				return false;
+			}
+		}
+		
+		function checkCardFor(card,forThis) {
+		
+			let cardInd = cardsObj[card];
+			
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				for (let i = 0; i<6; i++) {
+					if( room[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				for (let i = 0; i<6; i++) {
+					if( weapon[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			} else {
+				for (let i = 0; i<6; i++) {
+					if( suspect[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		function remove(array,value) {
+			const index = array.indexOf(value);
+			if (index > -1) {
+			  array.splice(index, 1);
+			}
+			return array;
+		}
+		
 		
 		function getKeyByValue(object, value) {
 			return Object.keys(object).find(key => object[key] === value);
@@ -138,17 +233,17 @@
 		function markSheet(playerInd,cardInd,mark) {
 			if(mark == yesCard){
 				solveRow(cardInd);
+				console.log("the row has been marked for yes");
 			}
 			
 			if (cardInd > 11) {
 				cardInd = cardInd - 12;
 				
-				//the kind of thinking
 				if (room[cardInd][playerInd][0] == yesCard) {
 					//do nothing at all homie
-				} else if (room[cardInd][playerInd][0] == noCard || mark == yesCard) {
+				} else if (room[cardInd][playerInd][0] == noCard && mark == yesCard) {
 					room[cardInd][playerInd][0] = mark;
-				//} else if (room[cardInd][playerInd][0] == maybeCard || mark == maybeCard){
+				//} else if (room[cardInd][playerInd][0] == maybeCard && mark == maybeCard){
 				//	room[cardInd][playerInd][0] = yesCard;
 				} else {
 					room[cardInd][playerInd][0] = mark;
@@ -163,9 +258,9 @@
 				//the kind of thinking
 				if (weapon[cardInd][playerInd][0] == yesCard) {
 					//do nothing at all homie
-				} else if (weapon[cardInd][playerInd][0] == noCard || mark == yesCard) {
+				} else if (weapon[cardInd][playerInd][0] == noCard && mark == yesCard) {
 					weapon[cardInd][playerInd][0] = mark;
-				//} else if (weapon[cardInd][playerInd][0] == maybeCard || mark == maybeCard){
+				//} else if (weapon[cardInd][playerInd][0] == maybeCard && mark == maybeCard){
 				//	weapon[cardInd][playerInd][0] = yesCard;
 				} else {
 					weapon[cardInd][playerInd][0] = mark;
@@ -175,12 +270,11 @@
 				//weapon[cardInd][playerInd][1] += 1;
 			} else {
 				
-				//the kind of thinking
 				if (suspect[cardInd][playerInd][0] == yesCard) {
 					//do nothing at all homie
-				} else if (suspect[cardInd][playerInd][0] == noCard || mark == yesCard) {
+				} else if (suspect[cardInd][playerInd][0] == noCard && mark == yesCard) {
 					suspect[cardInd][playerInd][0] = mark;
-				//} else if (suspect[cardInd][playerInd][0] == maybeCard || mark == maybeCard){
+				//} else if (suspect[cardInd][playerInd][0] == maybeCard && mark == maybeCard){
 				//	suspect[cardInd][playerInd][0] = yesCard;
 				} else {
 					suspect[cardInd][playerInd][0] = mark;
@@ -217,6 +311,9 @@
 			let que = [];
 			
 			cards = document.getElementById("cards").value;
+			
+			cardData.push(cards);
+			
 			cards = cards.split(" ");
 			
 			let type = cards[1];
@@ -342,18 +439,15 @@
 		
 		function update() {
 			setCards();
+			think();
 			updateTable();
 			updateInput();
 			updateInfo();
 		}
 		
 		function updateInfo() {
-			let move = "no move";
-			let answer = "no answer";
-			let likelihood = 0;
-			
 			let info = 	<div>
-							<div id="move">SUDGESTED MOVE: {move}</div>
+							<div id="move">SUGGESTED MOVE: {move}</div>
 							<div id="answer">POSSIBLE ANSWER: {answer} {likelihood}%</div>
 						</div>;
 			
