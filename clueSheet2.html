@@ -1,0 +1,122 @@
+<!-- 
+Warning this is an unfinished project. The goal is to add advanced logic however that has not been added yet.
+Currently it serves as an auto filler spreadsheet. It uses bable which is why I kept it on one page rather then make
+multiple files as it allows global variables and easier communication  between functions.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>CLUE</title>
+<meta me="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+<!-- Don't use this in production: -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script src="makeArray.js"></script>
+<script src="sheet.js"></script>
+<script src="game.js"></script>
+<script src="info.js"></script>
+<script src="input.js"></script>
+
+<style>
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+
+	th {
+		background-color:#339966;
+		color:white;
+	}
+	
+	.center {
+		margin: auto;
+		width: 80%;
+		border: 1px solid black;
+		padding: 10px;
+	}
+</style>
+
+
+<body>
+
+	<div id="home"></div>
+	<div id="input"></div>
+	<div id="table"></div>
+	<div id="info"></div>
+	
+	<script type="text/babel">
+	//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//
+	const maybeCard = "?"; // this is the indicator if a card may be in that spot
+	const yesCard = "O"; // this is the indicator for if a card is in that spot
+	const noCard = "X"; //this is the indicator for if no card is in that spot
+	
+	let home = 	<div>
+					<center>
+						<h1>SHEET-O-MATIC</h1>
+						<p>By: Benjamin Lewis</p>
+						<input type="text" name="name" id="p1" placeholder="player 1 initials" />
+						<br />
+						<input type="text" name="name" id="p2" placeholder="player 2 initials" />
+						<br />
+						<input type="text" name="name" id="p3" placeholder="player 3 initials" />
+						<br />
+						<input type="text" name="name" id="p4" placeholder="player 4 initials" />
+						<br />
+						<input type="text" name="name" id="p5" placeholder="player 5 initials" />
+						<br />
+						<input type="text" name="name" id="p6" placeholder="player 6 initials" />
+						<br />
+						<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
+						<br />
+						<button onClick={startGame}>Start Game</button>
+						<br />
+						<br />
+					</center>
+					<p className="center">
+						<b>how to use:</b>
+						<br />
+						<br />
+						Input the initials of the users. If there is no one playing a spot leave it blank. 
+						<br />
+						example: BL
+						<br />
+						<br />
+						All of the cards are indicated with their first two letters.
+						<br />
+						There are 3 ways to input cards:
+						<br />
+						<br />
+						The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
+						<br />
+						example: 1 k ms cs ba
+						<br />
+						<br />
+						The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
+						<br />
+						example: 1 g pp lp bi 5 pp card shown
+						<br />
+						example: 1 g pp lp bi 5 unknown shown
+						<br />
+						example: 1 g pp lp bi 1 no show1 g ms cs bi 4
+					</p>
+				</div>;
+				
+	ReactDOM.render(home,document.getElementById('input'));
+	
+	//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//
+	
+	function startGame() {
+		game.start();
+	}
+	
+	function update() {
+		game.update();
+	}	
+	</script>
+</body>
+</html>
