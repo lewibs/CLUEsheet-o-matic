@@ -1,9 +1,3 @@
-<!-- 
-Warning this is an unfinished project. The goal is to add advanced logic however that has not been added yet.
-Currently it serves as an auto filler spreadsheet. It uses bable which is why I kept it on one page rather then make
-multiple files as it allows global variables and easier communication  between functions.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
@@ -21,6 +15,7 @@ multiple files as it allows global variables and easier communication  between f
 <script src="game.js"></script>
 <script src="info.js"></script>
 <script src="input.js"></script>
+<script src="home.js"></script>
 
 <style>
 	table, th, td {
@@ -44,10 +39,283 @@ multiple files as it allows global variables and easier communication  between f
 
 <body>
 
-	<div id="home"></div>
-	<div id="input"></div>
-	<div id="table"></div>
-	<div id="info"></div>
+	<div id="home" style="display:initial">
+		<center>
+			<h1>SHEET-O-MATIC</h1>
+			<p>By: Benjamin Lewis</p>
+			<input type="text" name="name" id="p1" placeholder="player 1 initials" />
+			<br />
+			<input type="text" name="name" id="p2" placeholder="player 2 initials" />
+			<br />
+			<input type="text" name="name" id="p3" placeholder="player 3 initials" />
+			<br />
+			<input type="text" name="name" id="p4" placeholder="player 4 initials" />
+			<br />
+			<input type="text" name="name" id="p5" placeholder="player 5 initials" />
+			<br />
+			<input type="text" name="name" id="p6" placeholder="player 6 initials" />
+			<br />
+			<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
+			<br />
+			<button onClick="game.start()">Start Game</button>
+			<br />
+			<br />
+		</center>
+		<p class="center">
+			<b>how to use:</b>
+			<br />
+			<br />
+			Input the initials of the users. If there is no one playing a spot leave it blank. 
+			<br />
+			example: BL
+			<br />
+			<br />
+			All of the cards are indicated with their first two letters.
+			<br />
+			There are 3 ways to input cards:
+			<br />
+			<br />
+			The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
+			<br />
+			example: 1 k ms cs ba
+			<br />
+			<br />
+			The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
+			<br />
+			example: 1 g pp lp bi 5 pp card shown
+			<br />
+			example: 1 g pp lp bi 5 unknown shown
+			<br />
+			example: 1 g pp lp bi 1 no show1 g ms cs bi 4
+		</p>
+	</div>
+	
+	<div id="input" style="display:none">
+		<input type="text" name="name" id="cards" placeholder="enter move" />
+		<button onClick="game.update()">Update</button>
+	</div>
+	
+	<div id="sheet" style="display:none">
+		<div style="text-align:center">
+			<table style="width:100%"}}>
+				<tr style="font-weigh:bold">
+					<td style="text-align:right">Players:</td>
+					<td id="player1" style="background-color:#ff9999">p1</td>
+					<td id="player2" style="background-color:#ffdb4d">p2</td>
+					<td id="player3" style="background-color:#ffffff">p3</td>
+					<td id="player4" style="background-color:#66ff66">p4</td>
+					<td id="player5" style="background-color:#6699ff">p5</td>
+					<td id="player6" style="background-color:#d966ff">p6</td>
+				</tr>
+				
+				<th colspan="7">SUSPECTS</th>
+
+				<tr>
+					<td>Miss Scarlet (ms)</td>
+					<td id="s00" style="background-color:#e6e6e6"></td>
+					<td id="s01"></td>
+					<td id="s02" style="background-color:#e6e6e6"></td>
+					<td id="s03"></td>
+					<td id="s04" style="background-color:#e6e6e6"></td>
+					<td id="s05"></td>
+				</tr>
+				<tr>
+					<td>Col. Mustard (cm)</td>
+					<td id="s10" style="background-color:#e6e6e6"></td>
+					<td id="s11"></td>
+					<td id="s12" style="background-color:#e6e6e6"></td>
+					<td id="s13"></td>
+					<td id="s14" style="background-color:#e6e6e6"></td>
+					<td id="s15"></td>
+				</tr>
+				<tr>
+					<td>Mrs. White (mw)</td>
+					<td id="s20" style="background-color:#e6e6e6"></td>
+					<td id="s21"></td>
+					<td id="s22" style="background-color:#e6e6e6"></td>
+					<td id="s23"></td>
+					<td id="s24" style="background-color:#e6e6e6"></td>
+					<td id="s25"></td>
+				</tr>
+				<tr>
+					<td>Mr. Green (mg)</td>
+					<td id="s30" style="background-color:#e6e6e6"></td>
+					<td id="s31"></td>
+					<td id="s32" style="background-color:#e6e6e6"></td>
+					<td id="s33"></td>
+					<td id="s34" style="background-color:#e6e6e6"></td>
+					<td id="s35"></td>
+				</tr>
+				<tr>
+					<td>Mrs. Peacock (mp)</td>
+					<td id="s40" style="background-color:#e6e6e6"></td>
+					<td id="s41"></td>
+					<td id="s42" style="background-color:#e6e6e6"></td>
+					<td id="s43"></td>
+					<td id="s44" style="background-color:#e6e6e6"></td>
+					<td id="s45"></td>
+				</tr>
+				<tr>
+					<td>Prof. Plum (pp)</td>
+					<td id="s50" style="background-color:#e6e6e6"></td>
+					<td id="s51"></td>
+					<td id="s52" style="background-color:#e6e6e6"></td>
+					<td id="s53"></td>
+					<td id="s54" style="background-color:#e6e6e6"></td>
+					<td id="s55"></td>
+				</tr>
+				
+				<th colspan="7">WEAPONS</th>
+
+				<tr>
+					<td>Candle stick (cs)</td>
+					<td id="w00" style="background-color:#e6e6e6"></td>
+					<td id="w01"></td>
+					<td id="w02" style="background-color:#e6e6e6"></td>
+					<td id="w03"></td>
+					<td id="w04" style="background-color:#e6e6e6"></td>
+					<td id="w05"></td>
+				</tr>
+				<tr>
+					<td>Knife (kn)</td>
+					<td id="w10" style="background-color:#e6e6e6"></td>
+					<td id="w11"></td>
+					<td id="w12" style="background-color:#e6e6e6"></td>
+					<td id="w13"></td>
+					<td id="w14" style="background-color:#e6e6e6"></td>
+					<td id="w15"></td>
+				</tr>
+				<tr>
+					<td>Rope (ro)</td>
+					<td id="w20" style="background-color:#e6e6e6"></td>
+					<td id="w21"></td>
+					<td id="w22" style="background-color:#e6e6e6"></td>
+					<td id="w23"></td>
+					<td id="w24" style="background-color:#e6e6e6"></td>
+					<td id="w25"></td>
+				</tr>
+				<tr>
+					<td>Revolver (re)</td>
+					<td id="w30" style="background-color:#e6e6e6"></td>
+					<td id="w31"></td>
+					<td id="w32" style="background-color:#e6e6e6"></td>
+					<td id="w33"></td>
+					<td id="w34" style="background-color:#e6e6e6"></td>
+					<td id="w35"></td>
+				</tr>
+				<tr>
+					<td>Lead Pipe (lp)</td>
+					<td id="w40" style="background-color:#e6e6e6"></td>
+					<td id="w41"></td>
+					<td id="w42" style="background-color:#e6e6e6"></td>
+					<td id="w43"></td>
+					<td id="w44" style="background-color:#e6e6e6"></td>
+					<td id="w45"></td>
+				</tr>
+				<tr>
+					<td>Wrench (wr)</td>
+					<td id="w50" style="background-color:#e6e6e6"></td>
+					<td id="w51"></td>
+					<td id="w52" style="background-color:#e6e6e6"></td>
+					<td id="w53"></td>
+					<td id="w54" style="background-color:#e6e6e6"></td>
+					<td id="w55"></td>
+				</tr>
+				
+				<th colspan="7">ROOMS</th>
+
+				<tr>
+					<td>Ball Room (ba)</td>
+					<td id="r00" style="background-color:#e6e6e6"></td>
+					<td id="r01"></td>
+					<td id="r02" style="background-color:#e6e6e6"></td>
+					<td id="r03"></td>
+					<td id="r04" style="background-color:#e6e6e6"></td>
+					<td id="r05"></td>
+				</tr>
+				<tr>
+					<td>Billiard Room (bi)</td>
+					<td id="r10" style="background-color:#e6e6e6"></td>
+					<td id="r11"></td>
+					<td id="r12" style="background-color:#e6e6e6"></td>
+					<td id="r13"></td>
+					<td id="r14" style="background-color:#e6e6e6"></td>
+					<td id="r15"></td>
+				</tr>
+				<tr>
+					<td>Conservatory (co)</td>
+					<td id="r20" style="background-color:#e6e6e6"></td>
+					<td id="r21"></td>
+					<td id="r22" style="background-color:#e6e6e6"></td>
+					<td id="r23"></td>
+					<td id="r24" style="background-color:#e6e6e6"></td>
+					<td id="r25"></td>
+				</tr>
+				<tr>
+					<td>Dining Room (di)</td>
+					<td id="r30" style="background-color:#e6e6e6"></td>
+					<td id="r31"></td>
+					<td id="r32" style="background-color:#e6e6e6"></td>
+					<td id="r33"></td>
+					<td id="r34" style="background-color:#e6e6e6"></td>
+					<td id="r35"></td>
+				</tr>
+				<tr>
+					<td>Hall (ha)</td>
+					<td id="r40" style="background-color:#e6e6e6"></td>
+					<td id="r41"></td>
+					<td id="r42" style="background-color:#e6e6e6"></td>
+					<td id="r43"></td>
+					<td id="r44" style="background-color:#e6e6e6"></td>
+					<td id="r45"></td>
+				</tr>
+				<tr>
+					<td>Kitchen (ki)</td>
+					<td id="r50" style="background-color:#e6e6e6"></td>
+					<td id="r51"></td>
+					<td id="r52" style="background-color:#e6e6e6"></td>
+					<td id="r53"></td>
+					<td id="r54" style="background-color:#e6e6e6"></td>
+					<td id="r55"></td>
+				</tr>
+				
+				<tr>
+					<td>Library (li)</td>
+					<td id="r60" style="background-color:#e6e6e6"></td>
+					<td id="r61"></td>
+					<td id="r62" style="background-color:#e6e6e6"></td>
+					<td id="r63"></td>
+					<td id="r64" style="background-color:#e6e6e6"></td>
+					<td id="r65"></td>
+				</tr>
+				
+				<tr>
+					<td>Lounge (lo)</td>
+					<td id="r70" style="background-color:#e6e6e6"></td>
+					<td id="r71"></td>
+					<td id="r72" style="background-color:#e6e6e6"></td>
+					<td id="r73"></td>
+					<td id="r74" style="background-color:#e6e6e6"></td>
+					<td id="r75"></td>
+				</tr>
+				
+				<tr>
+					<td>Study (st)</td>
+					<td id="r80" style="background-color:#e6e6e6"></td>
+					<td id="r81"></td>
+					<td id="r82" style="background-color:#e6e6e6"></td>
+					<td id="r83"></td>
+					<td id="r84" style="background-color:#e6e6e6"></td>
+					<td id="r85"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div id="info" style="display:none">
+		<div id="move"></div>
+		<div id="answer"></div>
+	</div>
 	
 	<script type="text/babel">
 	//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//
@@ -55,68 +323,8 @@ multiple files as it allows global variables and easier communication  between f
 	const yesCard = "O"; // this is the indicator for if a card is in that spot
 	const noCard = "X"; //this is the indicator for if no card is in that spot
 	
-	let home = 	<div>
-					<center>
-						<h1>SHEET-O-MATIC</h1>
-						<p>By: Benjamin Lewis</p>
-						<input type="text" name="name" id="p1" placeholder="player 1 initials" />
-						<br />
-						<input type="text" name="name" id="p2" placeholder="player 2 initials" />
-						<br />
-						<input type="text" name="name" id="p3" placeholder="player 3 initials" />
-						<br />
-						<input type="text" name="name" id="p4" placeholder="player 4 initials" />
-						<br />
-						<input type="text" name="name" id="p5" placeholder="player 5 initials" />
-						<br />
-						<input type="text" name="name" id="p6" placeholder="player 6 initials" />
-						<br />
-						<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
-						<br />
-						<button onClick={startGame}>Start Game</button>
-						<br />
-						<br />
-					</center>
-					<p className="center">
-						<b>how to use:</b>
-						<br />
-						<br />
-						Input the initials of the users. If there is no one playing a spot leave it blank. 
-						<br />
-						example: BL
-						<br />
-						<br />
-						All of the cards are indicated with their first two letters.
-						<br />
-						There are 3 ways to input cards:
-						<br />
-						<br />
-						The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
-						<br />
-						example: 1 k ms cs ba
-						<br />
-						<br />
-						The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
-						<br />
-						example: 1 g pp lp bi 5 pp card shown
-						<br />
-						example: 1 g pp lp bi 5 unknown shown
-						<br />
-						example: 1 g pp lp bi 1 no show1 g ms cs bi 4
-					</p>
-				</div>;
-				
-	ReactDOM.render(home,document.getElementById('input'));
-	
-	//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//NEXT PAGE//
-	
-	function startGame() {
-		game.start();
-	}
-	
-	function update() {
-		game.update();
-	}	
+	const knownCard = "k";
+	const guessMade = "g";
 	</script>
 </body>
 </html>
