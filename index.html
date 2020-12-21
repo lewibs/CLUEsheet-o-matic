@@ -43,17 +43,17 @@
 		<center>
 			<h1>SHEET-O-MATIC</h1>
 			<p>By: Benjamin Lewis</p>
-			<input type="text" name="name" id="p1" placeholder="player 1 initials" />
+			<input type="text" name="name" id="p1" placeholder="player 1 and card quantity" />
 			<br />
-			<input type="text" name="name" id="p2" placeholder="player 2 initials" />
+			<input type="text" name="name" id="p2" placeholder="player 2 and card quantity" />
 			<br />
-			<input type="text" name="name" id="p3" placeholder="player 3 initials" />
+			<input type="text" name="name" id="p3" placeholder="player 3 and card quantity" />
 			<br />
-			<input type="text" name="name" id="p4" placeholder="player 4 initials" />
+			<input type="text" name="name" id="p4" placeholder="player 4 and card quantity" />
 			<br />
-			<input type="text" name="name" id="p5" placeholder="player 5 initials" />
+			<input type="text" name="name" id="p5" placeholder="player 5 and card quantity" />
 			<br />
-			<input type="text" name="name" id="p6" placeholder="player 6 initials" />
+			<input type="text" name="name" id="p6" placeholder="player 6 and card quantity" />
 			<br />
 			<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
 			<br />
@@ -65,9 +65,9 @@
 			<b>how to use:</b>
 			<br />
 			<br />
-			Input the initials of the users. If there is no one playing a spot leave it blank. 
+			Input the initials of the users and then a space followed by the number of cards in their hand. If there is no one playing a spot leave it blank. 
 			<br />
-			example: BL
+			example: BL 3
 			<br />
 			<br />
 			All of the cards are indicated with their first two letters.
@@ -91,7 +91,7 @@
 	</div>
 	
 	<div id="input" style="display:none">
-		<input type="text" name="name" id="cards" placeholder="enter move" />
+		<input type="text" name="name" id="NOTHING" placeholder="enter move" />
 		<button onClick="game.update()">Update</button>
 	</div>
 	

@@ -3,8 +3,9 @@ let sheet = new Object;
 sheet.suspects = makeArray(6,6);
 sheet.weapons = makeArray(6,6);
 sheet.rooms = makeArray(9,6);
-sheet.players = makeArray(6,1);
+sheet.players = makeArray(6,2);
 sheet.cards = [];
+sheet.log = [];
 sheet.key = {
 				//people
 				"ms" : 0,
@@ -37,19 +38,31 @@ sheet.getCards = function() {
 	this.cards = this.cards.split(" ");
 }
 
+sheet.addToLog = function(cards) {
+	this.log[this.log.length] = cards;
+}
+
 sheet.readCards = function() {
+	let playerInd;
 	this.getCards();
 	let type = this.cards[1];
 	if (type == knownCard){
-		let playerInd = this.cards[0] - 1;
-		if (this.cards.length > 3) {
-			this.markCol(this.cards[0],noCard);
-		}
+		playerInd = this.cards[0] - 1;
 		for (let i = 2 ; i < this.cards.length ; i++){
 			this.mark(this.cards[i],playerInd,yesCard);
 		}
-	} else if (type == guessMade) {
-		
+	} else if (type == guessMade && this.cards.length == 6) {
+		playerInd = this.cards[5] - 1;
+		for (let i = 2 ; i < 5 ; i++){
+			this.mark(this.cards[i],playerInd,maybeCard);
+			this.addToLog(this.cards);
+		}
+	} else if (type == guessMade && this.cards.length == 7) {
+		playerInd = this.cards[5] - 1;
+		this.mark(this.cards[6],playerInd,yesCard);
+		this.addToLog(this.cards);
+	} else {
+		console.log("nothing happened");
 	}
 }
 
@@ -98,12 +111,12 @@ sheet.rooms.mark = function (cardInd, playerInd, mark) {
 }
 
 sheet.getPlayers = function() {
-	this.players[0] = document.getElementById("p1").value;
-	this.players[1] = document.getElementById("p2").value;
-	this.players[2] = document.getElementById("p3").value;
-	this.players[3] = document.getElementById("p4").value;
-	this.players[4] = document.getElementById("p5").value;
-	this.players[5] = document.getElementById("p6").value;
+	this.players[0] = document.getElementById("p1").value.split(" ");
+	this.players[1] = document.getElementById("p2").value.split(" ");
+	this.players[2] = document.getElementById("p3").value.split(" ");
+	this.players[3] = document.getElementById("p4").value.split(" ");
+	this.players[4] = document.getElementById("p5").value.split(" ");
+	this.players[5] = document.getElementById("p6").value.split(" ");
 }
 
 sheet.clearBlankPlayers = function() {
@@ -128,12 +141,12 @@ sheet.markCol = function(col,mark) {
 
 
 sheet.updatePlayers = function() {
-	document.getElementById("player1").innerHTML = "1." + this.players[0];
-	document.getElementById("player2").innerHTML = "2." + this.players[1];
-	document.getElementById("player3").innerHTML = "3." + this.players[2];
-	document.getElementById("player4").innerHTML = "4." + this.players[3];
-	document.getElementById("player5").innerHTML = "5." + this.players[4];
-	document.getElementById("player6").innerHTML = "6." + this.players[5];
+	document.getElementById("player1").innerHTML = "1." + this.players[0][0];
+	document.getElementById("player2").innerHTML = "2." + this.players[1][0];
+	document.getElementById("player3").innerHTML = "3." + this.players[2][0];
+	document.getElementById("player4").innerHTML = "4." + this.players[3][0];
+	document.getElementById("player5").innerHTML = "5." + this.players[4][0];
+	document.getElementById("player6").innerHTML = "6." + this.players[5][0];
 }
 
 sheet.toggleVisability = function() {
