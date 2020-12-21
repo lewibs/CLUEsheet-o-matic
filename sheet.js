@@ -32,6 +32,15 @@ sheet.key = {
 				"lo" : 19,
 				"st" : 20
 			}
+			
+//key stuff
+sheet.key.size = function() {
+	var size = 0, key;
+	for (key in this) {
+		if (this.hasOwnProperty(key)) size++;
+	}
+	return size;
+};
 	
 //thinking stuff	
 sheet.think = function() {
@@ -48,7 +57,7 @@ sheet.playerAllKnown = function() {
 }
 
 sheet.cardKnown = function() {
-	
+	for
 }
 
 sheet.countCardFor = function(card,mark) {
