@@ -1,0 +1,763 @@
+<!-- 
+Warning this is an unfinished project. The goal is to add advanced logic however that has not been added yet.
+Currently it serves as an auto filler spreadsheet. It uses bable which is why I kept it on one page rather then make
+multiple files as it allows global variables and easier communication  between functions.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>CLUE</title>
+<meta me="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+<!-- Don't use this in production: -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+
+	th {
+		background-color:#339966;
+		color:white;
+	}
+	
+	.center {
+		margin: auto;
+		width: 80%;
+		border: 1px solid black;
+		padding: 10px;
+	}
+</style>
+
+
+<body>
+
+	<div id="input"></div>
+	<div id="table"></div>
+	<div id="info"></div>
+	
+	<script type="text/babel">
+		let suspect = makeArray(6,6);
+		let weapon = makeArray(6,6);
+		let room = makeArray(9,6);
+		let player = makeArray(6,1);
+		let cards = "";
+		let cardData = [];
+		let move = "no move";
+		let answer = "no answer";
+		let likelihood = 0;
+		const maybeCard = "?"; // this is the indicator if a card may be in that spot
+		const yesCard = "O"; // this is the indicator for if a card is in that spot
+		const noCard = "X"; //this is the indicator for if no card is in that spot
+		
+		let cardsObj = {
+			//people
+			"ms" : 0,
+			"cm" : 1,
+			"mw" : 2,
+			"mg" : 3,
+			"mp" : 4,
+			"pp" : 5,
+			//weapons
+			"cs" : 6,
+			"kn" : 7,
+			"ro" : 8,
+			"re" : 9,
+			"lp" : 10,
+			"wr" : 11,
+			//rooms
+			"ba" : 12,
+			"bi" : 13,
+			"co" : 14,
+			"di" : 15,
+			"ha" : 16,
+			"ki" : 17,
+			"li" : 18,
+			"lo" : 19,
+			"st" : 20
+		}
+		
+		let home = 	<div>
+						<center>
+							<h1>SHEET-O-MATIC</h1>
+							<p>By: Benjamin Lewis</p>
+							<input type="text" name="name" id="p1" placeholder="player 1 initials" />
+							<br />
+							<input type="text" name="name" id="p2" placeholder="player 2 initials" />
+							<br />
+							<input type="text" name="name" id="p3" placeholder="player 3 initials" />
+							<br />
+							<input type="text" name="name" id="p4" placeholder="player 4 initials" />
+							<br />
+							<input type="text" name="name" id="p5" placeholder="player 5 initials" />
+							<br />
+							<input type="text" name="name" id="p6" placeholder="player 6 initials" />
+							<br />
+							<input type="text" name="name" id="cards" placeholder="enter cards as: 4 k li mp kn" />
+							<br />
+							<button onClick={startGame}>Start Game</button>
+							<br />
+							<br />
+						</center>
+						<p className="center">
+							<b>how to use:</b>
+							<br />
+							<br />
+							Input the initials of the users. If there is no one playing a spot leave it blank. 
+							<br />
+							example: BL
+							<br />
+							<br />
+							All of the cards are indicated with their first two letters.
+							<br />
+							There are 3 ways to input cards:
+							<br />
+							<br />
+							The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
+							<br />
+							example: 1 k ms cs ba
+							<br />
+							<br />
+							The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
+							<br />
+							example: 1 g pp lp bi 5 pp card shown
+							<br />
+							example: 1 g pp lp bi 5 unknown shown
+							<br />
+							example: 1 g pp lp bi 1 no show1 g ms cs bi 4
+						</p>
+					</div>;
+			
+		ReactDOM.render(home,document.getElementById('input'));
+		
+		//functions
+		
+		function think() {
+			//this one goes and checks all moves done to see if at any point a guess was made
+			//and the third card was the only unknown card
+			twoCardsKnown();
+			//checks if two of the cards guessed in that players hands are unknown. Then it known the third is the one it must have 
+			twoCardsUnknown();
+			// this checks the most recent guess with all past guesses and checks for overlap
+			//overlap();
+		}
+		
+		function twoCardsUnknown() {
+			//go through all data
+			let cardInd;
+			let playerInd = cards[5] - 1;
+			for (let i = 0; i < cardData.length; i++) {
+				cards = cardData[i].split(" ");
+				//if the card shown is unknown and if it does not loop and if it is a guess
+				if (typeof cards[5] != 'undefined' && cards[0] != cards[5] && cards[1] == "g") {
+					if (twoUnknown([cards[2],cards[3],cards[4]],playerInd));
+						cardInd = getCardInd(returnTheThird([cards[2],cards[3],cards[4]],noCard));
+						
+						//markSheet(playerInd,cardInd,yesCard);
+				}
+			
+			}
+		}
+		
+		function twoUnknown(card, playerInd) {
+			let cardInd;
+			for (let i = 0 ; i<card.length ; i++) {
+				cardInd = getCardInd(card[i]);
+			
+				if (cardInd > 11) {
+					cardInd = cardInd - 12;
+						card[i] = room[cardInd][playerInd][0] == noCard;
+				} else if (cardInd > 5) {
+					cardInd = cardInd - 6;
+						card[i] = weapon[cardInd][playerInd][0] == noCard;
+				} else {
+						card[i] = suspect[cardInd][playerInd][0] == noCard;
+				}
+				
+			}
+			
+			let count = card.filter(Boolean).length;
+			console.log(card);
+			console.log(count);
+			if (count == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function twoCardsKnown() {
+			//loop through the cardInd
+			let cardInd;
+			let playerInd;
+			for (let i = 0; i < cardData.length; i++) {
+				//split card
+				cards = cardData[i].split(" ");
+				//check if the card[5] exists and check that card[0] is not equal to card[5] and that the thing it is looking at is not a "k"
+				if (typeof cards[5] != 'undefined' && cards[0] != cards[5] && cards[1] == "g") {
+						//if it is not equal check if two of the cards are known but not the third
+						if (twoKnown([cards[2],cards[3],cards[4]])) {
+							cardInd = getCardInd(returnTheThird([cards[2],cards[3],cards[4]],yesCard));
+							playerInd = cards[5]-1;
+							markSheet(playerInd,cardInd,yesCard);
+						}
+				}
+			}
+		}
+		
+		function twoKnown(cards) {
+			cards = [checkCardFor(cards[0],yesCard),checkCardFor(cards[1],yesCard),checkCardFor(cards[2],yesCard)];
+			let count = cards.filter(Boolean).length;
+			if (count == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		function returnTheThird(cards,mark) {
+			let cardsBool = [checkCardFor(cards[0],mark),checkCardFor(cards[1],mark),checkCardFor(cards[2],mark)];
+			let count = cardsBool.filter(Boolean).length;
+			if (count == 2) {
+				return cards[cardsBool.indexOf(false)];
+			} else {
+				return false;
+			}
+		}
+		
+		function checkCardFor(card,forThis) {
+		
+			let cardInd = cardsObj[card];
+			
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				for (let i = 0; i<6; i++) {
+					if( room[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				for (let i = 0; i<6; i++) {
+					if( weapon[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			} else {
+				for (let i = 0; i<6; i++) {
+					if( suspect[cardInd][i][0] == forThis ) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		function remove(array,value) {
+			const index = array.indexOf(value);
+			if (index > -1) {
+			  array.splice(index, 1);
+			}
+			return array;
+		}
+		
+		
+		function getKeyByValue(object, value) {
+			return Object.keys(object).find(key => object[key] === value);
+		}
+		
+		function getValueByKey(object, key) {
+			return object[key];
+		}
+		
+		function markSheet(playerInd,cardInd,mark) {
+			if(mark == yesCard){
+				solveRow(cardInd);
+			}
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				if (room[cardInd][playerInd][0] == yesCard) {
+					//do nothing at all homie
+				} else if (room[cardInd][playerInd][0] == noCard && mark == yesCard) {
+					room[cardInd][playerInd][0] = mark;
+				} else if (room[cardInd][playerInd][0] == noCard && mark != yesCard){
+					// do nothing
+				} else {
+					room[cardInd][playerInd][0] = mark;
+				}
+				
+				
+				//room[cardInd][playerInd][1] += 1;	
+				
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				
+				//the kind of thinking
+				if (weapon[cardInd][playerInd][0] == yesCard) {
+					//do nothing at all homie
+				} else if (weapon[cardInd][playerInd][0] == noCard && mark == yesCard) {
+					weapon[cardInd][playerInd][0] = mark;
+				} else if (weapon[cardInd][playerInd][0] == noCard && mark != yesCard){
+					//do nothing
+				} else {
+					weapon[cardInd][playerInd][0] = mark;
+				}
+				
+				
+				//weapon[cardInd][playerInd][1] += 1;
+			} else {
+				if (suspect[cardInd][playerInd][0] == yesCard) {
+					//do nothing at all homie
+				} else if (suspect[cardInd][playerInd][0] == noCard && mark == yesCard) {
+					suspect[cardInd][playerInd][0] = mark;
+				} else if (suspect[cardInd][playerInd][0] == noCard && mark != yesCard){
+					//do nothing 
+				} else {
+					suspect[cardInd][playerInd][0] = mark;
+				}
+				//suspect[cardInd][playerInd][1] += 1;
+			}
+		}
+		
+		function makeQue(start) {
+			let order = [0,1,2,3,4,5,0];
+			let newOrder = [];
+			let j = start;
+			for (let i = 0 ; i < 7 ; i++) {
+				newOrder[i] = order[j];
+				j++;
+				if (j == 6) {
+				 j = 0;
+				}
+			}
+			return newOrder;
+		}
+		
+		function getCardInd(card){
+			return getValueByKey(cardsObj,card);
+		}
+		
+		function setCards() {
+			let cardInd = null;
+			let playerInd = null;
+			let player1Ind = null;
+			let player2Ind = null;
+			let que = [];
+			
+			cards = document.getElementById("cards").value;
+			
+			cardData.push(cards);
+			
+			cards = cards.split(" ");
+			
+			let type = cards[1];
+			
+			if (type == "k") {
+				playerInd = cards[0] - 1;
+				//if more then one card is given it is assumed that all the cards for that person is known
+				if (cards.length > 3) {
+					solveCol(playerInd);
+				}
+				//standard mark for each check
+				for (let i = 2; i < cards.length; i++) {
+					cardInd = getCardInd(cards[i]);
+					markSheet(playerInd,cardInd,yesCard);
+				}
+			} else if (type == "g") {
+				//example: 1 g pp lp bi 5 pp card shown
+				//example: 1 g pp lp bi 5 unknown shown
+				//example: 1 g pp lp bi 1 no show
+				
+				player1Ind = cards[0] - 1;
+				player2Ind = cards[5] - 1;
+				
+				que = makeQue(player1Ind);
+				for (let i = 1 ; i < que.length ; i++) { // go through que
+					for (let j = 2 ; j <= 4 ; j++) { // mark spots
+						cardInd = getCardInd(cards[j]);
+						markSheet(que[i],cardInd, noCard);
+					}
+					if (que[i] == player2Ind) {
+						for (let h = 2 ; h <= 4 ; h++) { // mark spots
+							cardInd = getCardInd(cards[h]);
+							if (typeof cards[6] == 'undefined') {
+								markSheet(que[i],cardInd, maybeCard);
+							} else {
+								markSheet(que[i],cardInd, "");
+							}
+						}
+						break;
+					}
+				}
+				
+				if (typeof cards[6] != 'undefined') { // run this for when the card is shown
+					cardInd = getCardInd(cards[6]);
+					markSheet(player2Ind,cardInd, yesCard);
+				}
+			}
+		}
+		
+		function blankPlayers() {
+			for (let i = 0; i < 6; i++) {
+				if (player[i]=="") {
+					solveCol(i);
+				}
+			}
+		}
+		
+		function solveCol(playerInd) {
+			for (let i = 0; i<6; i++) {
+				if( suspect[i][playerInd][0] != yesCard ) {
+					suspect[i][playerInd][0] = noCard;
+				}
+				if( weapon[i][playerInd][0] != yesCard ) {
+					weapon[i][playerInd][0] = noCard;
+				}
+			}
+			
+			for (let i = 0; i<9; i++) {
+				if( room[i][playerInd][0] != yesCard ) {
+					room[i][playerInd][0] = noCard;
+				}
+			}
+		}
+		
+		function ggRow(cardInd) {
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				for (let i = 0; i<6; i++) {
+					room[cardInd][i][0] = "GG";
+				}
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				for (let i = 0; i<6; i++) {
+					weapon[cardInd][i][0] = "GG";
+				}
+			} else {
+				for (let i = 0; i<6; i++) {
+					suspect[cardInd][i][0] = "GG";
+				}
+			}
+		}
+		
+		function solveRow(cardInd){
+			if (cardInd > 11) {
+				cardInd = cardInd - 12;
+				for (let i = 0; i<6; i++) {
+					if( room[cardInd][i][0] != yesCard ) {
+						room[cardInd][i][0] = noCard;
+					}
+				}
+			} else if (cardInd > 5) {
+				cardInd = cardInd - 6;
+				for (let i = 0; i<6; i++) {
+					if( weapon[cardInd][i][0] != yesCard ) {
+						weapon[cardInd][i][0] = noCard;
+					}
+				}
+			} else {
+				for (let i = 0; i<6; i++) {
+					if( suspect[cardInd][i][0] != yesCard ) {
+						suspect[cardInd][i][0] = noCard;
+					}
+				}
+			}
+		}
+		
+		function startGame() {
+			player[0] = document.getElementById("p1").value;
+			player[1] = document.getElementById("p2").value;
+			player[2] = document.getElementById("p3").value;
+			player[3] = document.getElementById("p4").value;
+			player[4] = document.getElementById("p5").value;
+			player[5] = document.getElementById("p6").value;
+			blankPlayers();
+			update();
+		}
+		
+		function update() {
+			setCards();
+			think();
+			updateTable();
+			updateInput();
+			updateInfo();
+		}
+		
+		function updateInfo() {
+			let info = 	<div>
+							<div id="move">SUGGESTED MOVE: {move}</div>
+							<div id="answer">POSSIBLE ANSWER: {answer} {likelihood}%</div>
+						</div>;
+			
+			ReactDOM.render(info,document.getElementById('info'));
+		}
+		
+		function updateInput() {
+			let playerInput = 	<div>
+									<input type="text" name="name" id="cards" placeholder="enter move" />
+									<button onClick={update}>Update</button>
+								</div>;
+			ReactDOM.render(playerInput,document.getElementById('input'));
+		}
+								
+		
+		function updateTable(){
+			let table = <div>
+							<div style={{"text-align":"center"}}>
+								<table style={{width:"100%"}}>
+									<tr style={{"font-weigh":"bold"}}>
+										<td style={{"text-align":"right"}}>Players:</td>
+										<td style={{"background-color":"#ff9999"}}>1.{player[0]}</td>
+										<td style={{"background-color":"#ffdb4d"}}>2.{player[1]}</td>
+										<td style={{"background-color":"#ffffff"}}>3.{player[2]}</td>
+										<td style={{"background-color":"#66ff66"}}>4.{player[3]}</td>
+										<td style={{"background-color":"#6699ff"}}>5.{player[4]}</td>
+										<td style={{"background-color":"#d966ff"}}>6.{player[5]}</td>
+									</tr>
+									
+									<th colspan="7">SUSPECTS</th>
+				
+									<tr>
+										<td>Miss Scarlet (ms)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[0][0]}</td>
+										<td>{suspect[0][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[0][2]}</td>
+										<td>{suspect[0][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[0][4]}</td>
+										<td>{suspect[0][5]}</td>
+									</tr>
+									<tr>
+										<td>Col. Mustard (cm)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[1][0]}</td>
+										<td>{suspect[1][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[1][2]}</td>
+										<td>{suspect[1][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[1][4]}</td>
+										<td>{suspect[1][5]}</td>
+									</tr>
+									<tr>
+										<td>Mrs. White (mw)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[2][0]}</td>
+										<td>{suspect[2][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[2][2]}</td>
+										<td>{suspect[2][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[2][4]}</td>
+										<td>{suspect[2][5]}</td>
+									</tr>
+									<tr>
+										<td>Mr. Green (mg)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[3][0]}</td>
+										<td>{suspect[3][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[3][2]}</td>
+										<td>{suspect[3][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[3][4]}</td>
+										<td>{suspect[3][5]}</td>
+									</tr>
+									<tr>
+										<td>Mrs. Peacock (mp)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[4][0]}</td>
+										<td>{suspect[4][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[4][2]}</td>
+										<td>{suspect[4][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[4][4]}</td>
+										<td>{suspect[4][5]}</td>
+									</tr>
+									<tr>
+										<td>Prof. Plum (pp)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[5][0]}</td>
+										<td>{suspect[5][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[5][2]}</td>
+										<td>{suspect[5][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{suspect[5][4]}</td>
+										<td>{suspect[5][5]}</td>
+									</tr>
+									
+									<th colspan="7">WEAPONS</th>
+
+									<tr>
+										<td>Candle stick (cs)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][0]}</td>
+										<td>{weapon[0][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][2]}</td>
+										<td>{weapon[0][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[0][4]}</td>
+										<td>{weapon[0][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Knife (kn)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][0]}</td>
+										<td>{weapon[1][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][2]}</td>
+										<td>{weapon[1][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[1][4]}</td>
+										<td>{weapon[1][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Rope (ro)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][0]}</td>
+										<td>{weapon[2][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][2]}</td>
+										<td>{weapon[2][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[2][4]}</td>
+										<td>{weapon[2][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Revolver (re)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][0]}</td>
+										<td>{weapon[3][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][2]}</td>
+										<td>{weapon[3][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[3][4]}</td>
+										<td>{weapon[3][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Lead Pipe (lp)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][0]}</td>
+										<td>{weapon[4][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][2]}</td>
+										<td>{weapon[4][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[4][4]}</td>
+										<td>{weapon[4][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Wrench (wr)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][0]}</td>
+										<td>{weapon[5][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][2]}</td>
+										<td>{weapon[5][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{weapon[5][4]}</td>
+										<td>{weapon[5][5]}</td>
+									</tr>
+									
+									<th colspan="7">ROOMS</th>
+
+									<tr>
+										<td>Ball Room (ba)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[0][0]}</td>
+										<td>{room[0][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[0][2]}</td>
+										<td>{room[0][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[0][4]}</td>
+										<td>{room[0][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Billiard Room (bi)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][0]}</td>
+										<td>{room[1][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][2]}</td>
+										<td>{room[1][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[1][4]}</td>
+										<td>{room[1][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Conservatory (co)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][0]}</td>
+										<td>{room[2][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][2]}</td>
+										<td>{room[2][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[2][4]}</td>
+										<td>{room[2][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Dining Room (di)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][0]}</td>
+										<td>{room[3][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][2]}</td>
+										<td>{room[3][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[3][4]}</td>
+										<td>{room[3][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Hall (ha)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][0]}</td>
+										<td>{room[4][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][2]}</td>
+										<td>{room[4][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[4][4]}</td>
+										<td>{room[4][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Kitchen (ki)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][0]}</td>
+										<td>{room[5][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][2]}</td>
+										<td>{room[5][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[5][4]}</td>
+										<td>{room[5][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Library (li)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][0]}</td>
+										<td>{room[6][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][2]}</td>
+										<td>{room[6][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[6][4]}</td>
+										<td>{room[6][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Lounge (lo)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][0]}</td>
+										<td>{room[7][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][2]}</td>
+										<td>{room[7][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[7][4]}</td>
+										<td>{room[7][5]}</td>
+									</tr>
+									
+									<tr>
+										<td>Study (st)</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[8][0]}</td>
+										<td>{room[8][1]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[8][2]}</td>
+										<td>{room[8][3]}</td>
+										<td style={{"background-color":"#e6e6e6"}}>{room[8][4]}</td>
+										<td>{room[8][5]}</td>
+									</tr>
+								</table>
+							</div>
+						</div>;	
+			ReactDOM.render(table,document.getElementById('table'));
+		}
+		
+		function makeArray(r,c) {
+			// Create a one dimensional array 
+			// capable of storing 3 objects
+			let  theArray = new Array(r); // Indices for the row
+			  
+			  
+			// Loop through the array, adding a 
+			// new array to each location
+			for (let i = 0; i < theArray.length; i++) { 
+				theArray[i] = new Array(c);// new arrays for the columns
+			} 
+			// Put items in the 2D array
+			for (let r = 0; r < theArray.length; r++) {
+				for (let c = 0; c < theArray[0].length; c++) {
+					theArray[r][c]= [null,null];
+				}
+			}
+			
+			return theArray;
+		}
+	</script>
+
+</body>
+</html>
