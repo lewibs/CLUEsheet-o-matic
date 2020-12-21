@@ -12,7 +12,7 @@ game.start = function() {
 
 game.update = function() {
 	sheet.readCards();
-	//think
+	sheet.think();
 	sheet.update();
 	info.update();
 	input.update();

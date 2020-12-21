@@ -32,6 +32,77 @@ sheet.key = {
 				"lo" : 19,
 				"st" : 20
 			}
+	
+//thinking stuff	
+sheet.think = function() {
+	this.playerAllKnown();
+	this.cardKnown();
+}	
+
+sheet.playerAllKnown = function() {
+	for (let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) {
+		if (this.countPlayerFor(playerInd,yesCard) == this.players[playerInd][1]) { //counts the known cards in that players index and checks it with how many cards they have.
+			this.markCol(playerInd,noCard);
+		}
+	}
+}
+
+sheet.cardKnown = function() {
+	
+}
+
+sheet.countCardFor = function(card,mark) {
+	let row = this.key[card];
+	let count = 0;
+	if (row > 11) {
+		row = row - 12;
+		//rooms
+		for(let col = 0; col < this.rooms[0].length; col++) {
+			if (this.rooms[row][col] == mark) {
+				count++;
+			}
+		}
+	} else if (row > 5) {
+		row = row - 6;
+		//weapons
+		for(let col = 0; col < this.weapons[0].length; col++) {
+			if (this.weapons[row][col] == mark) {
+				count++;
+			}
+		}
+	} else {
+		//suspects
+		for(let col = 0; col < this.suspects[0].length; col++) {
+			if (this.suspects[row][col] == mark) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+sheet.countPlayerFor = function(playerInd,mark) {
+	let col = playerInd;
+	let count = 0;
+	for (let row = 0; row < this.suspects.length; row++){
+		if (this.suspects[row][col] == mark) {
+			count++;
+		}
+	}
+	for (let row = 0; row < this.weapons.length; row++){
+		if (this.weapons[row][col] == mark ) {
+			count++;
+		}
+	}
+	for (let row = 0; row <this.rooms.length; row++){
+		if (this.rooms[row][col] == mark) {
+			count++;
+		}
+	}
+	return count;
+}
+
+//normal sheet managment
 
 sheet.getCards = function() {
 	this.cards = document.getElementById('cards').value;
@@ -139,6 +210,11 @@ sheet.markCol = function(col,mark) {
 	}
 }
 
+sheet.markRow = function(card,mark) {
+	for (let playerInd = 0; playerInd < this.suspects[0].length; playerInd++) {	
+		this.mark(card,playerInd,mark);
+	}
+}
 
 sheet.updatePlayers = function() {
 	document.getElementById("player1").innerHTML = "1." + this.players[0][0];
