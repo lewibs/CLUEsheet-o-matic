@@ -1,4 +1,4 @@
-//object function
+//object functions
 function size(obj) {
 	var size = 0, key;
 	for (key in obj) {

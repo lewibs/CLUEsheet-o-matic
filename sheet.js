@@ -48,7 +48,13 @@ sheet.playerAllKnown = function() {
 }
 
 sheet.cardKnown = function() {
-	
+	let card;
+	for (let i = 0; i < size(sheet.key); i++){
+		card = getKeyByValue(sheet.key,i);
+		if (sheet.countCardFor(card,yesCard) == 1) {
+			sheet.markRow(card,noCard);
+		}
+	}
 }
 
 sheet.countCardFor = function(card,mark) {
