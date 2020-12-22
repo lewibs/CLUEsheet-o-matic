@@ -4,12 +4,6 @@
 <title>CLUE</title>
 <meta me="viewport" content="width=device-width,initial-scale=1">
 
-<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-
-<!-- Don't use this in production: -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
 <script src="makeArray.js"></script>
 <script src="sheet.js"></script>
 <script src="game.js"></script>
@@ -66,28 +60,7 @@
 			<b>how to use:</b>
 			<br />
 			<br />
-			Input the initials of the users and then a space followed by the number of cards in their hand. If there is no one playing a spot leave it blank. 
-			<br />
-			example: BL 3
-			<br />
-			<br />
-			All of the cards are indicated with their first two letters.
-			<br />
-			There are 3 ways to input cards:
-			<br />
-			<br />
-			The first is using the known function "k". To do this you input the number for the player whos card is known then enter the cards. if you do more then one card it is assumed that that is all of that players cards.
-			<br />
-			example: 1 k ms cs ba
-			<br />
-			<br />
-			The second is when there is a guess and the card is shown "g". For this enter the player function guess player if no one has the answer set the final player as the starting player and if a card is shown add it to the end.
-			<br />
-			example: 1 g pp lp bi 5 pp card shown
-			<br />
-			example: 1 g pp lp bi 5 unknown shown
-			<br />
-			example: 1 g pp lp bi 1 no show1 g ms cs bi 4
+			hold on fam im working on it
 		</p>
 	</div>
 	
@@ -318,7 +291,7 @@
 		<div id="answer"></div>
 	</div>
 	
-	<script type="text/babel">
+	<script>
 	//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//CONSTANTS//
 	const maybeCard = "?"; // this is the indicator if a card may be in that spot
 	const yesCard = "O"; // this is the indicator for if a card is in that spot
