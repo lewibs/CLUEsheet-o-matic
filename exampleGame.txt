@@ -1,0 +1,23 @@
+strategies:
+when guessing push back past the questionmarks
+logic past check newest g with past ones and look if a person how one of the 4 cards in 2 guesses
+logic if the blank spots left are equal to the number of cards those are the players cards
+
+1 BL 3 mw li ha
+2 LS 3 cs ki bi
+3 QR 3 ba re di
+4 PT 3 st co kn
+5 JK 3 mp cm ms
+6 GD 3 mg ro wr
+
+answer: lp pp lo
+
+game 1:
+1 k mw li ha
+1 g ms cs ba 2 cs
+2 g ms cs di 3
+3 g mp kn st 4
+4 g ms ro di 5
+5 g mp lp bi 2
+6 g mw ro ki 1
+1 g mp kn di 3 di bad logic gave 3 ms and 5 ro

@@ -36,7 +36,7 @@ sheet.key = {
 //thinking stuff	
 sheet.think = function() {
 	for (let i = 0 ; i < 2; i++ ) { //some of these are dependent on order and rather then figure out the optimal order and possibly have contradictions i just ran it twice
-		this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
+		this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known		
 		this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
 		this.ifTwoTrue(); //this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
 		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
@@ -122,6 +122,7 @@ sheet.ifTwoTrue = function() {
 }
 
 sheet.didNotAnswer = function() {
+	console.log(125);
 	let que;
 	let cards = this.log[this.log.length - 1];
 	if (cards[1] == guessMade) {
