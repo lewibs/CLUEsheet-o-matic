@@ -37,22 +37,31 @@ sheet.key = {
 sheet.think = function() {
 	this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
 	this.cardKnown(); //this checks if that card is known and marks the row x if it is
-	//this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
+	this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
 	//this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
 	//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 }	//check if two of the three cards are known and the second player does not have them two then the third is known
 
 sheet.ifTwoFalse = function(){
 	let cards;
-	let playerInd;
+	let cardsBool;
 	for (let i = 0 ; i < this.log.length; i++){
 		if(this.log[i].length == 6){ //if it is 6 then the format is 1 g cd cd cd 5
 			cards = this.log[i];
 			if(cards[0] != cards[5]){ //makes sure that it was not a loop around. as it is possible with a loop around that the player has all three cards
-				playerInd = cards[5];
+				playerInd = cards[5] - 1;
 				cards = [cards[2],cards[3],cards[4]];
+				console.log(cards[0] + " " + cards[1]  + " " + cards[2]);
+				console.log(playerInd);
+				cardsBool = [this.getCardValue(cards[0],playerInd) == noCard,
+							 this.getCardValue(cards[1],playerInd) == noCard,
+							 this.getCardValue(cards[2],playerInd) == noCard
+							];
 				//check if two are false and return the third
-				
+				if(cardsBool.filter(Boolean).length == 2){
+					cards = cards[cardsBool.indexOf(false)];
+					this.mark(cards,playerInd,yesCard);
+				}
 			}
 		}
 	}
