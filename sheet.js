@@ -92,13 +92,13 @@ sheet.ifTwoTrue = function() {
 	let cardsBool;
 	let playerInd;
 	for (let i = 0 ; i < this.log.length ; i++) {
-		if(this.log[i].length == 6) { //this only runs if a card is not shown in that example as it trys to find out what was shown which is why 6 is used
+		if(this.log[i][0] != this.log[i][5] && this.log[i].length == 6) { //this only runs if a card is not shown in that example and it did not loop to the first player as it trys to find out what was shown which is why 6 is used
 			cards = [this.log[i][2],this.log[i][3],this.log[i][4]];
 			cardsBool = [this.countCardFor(cards[0],yesCard)==1,
 						 this.countCardFor(cards[1],yesCard)==1,
 						 this.countCardFor(cards[2],yesCard)==1
 						];
-			playerInd = this.log[i][5];
+			playerInd = this.log[i][5] - 1;
 			//check if two are known and return the third
 			if(cardsBool.filter(Boolean).length == 2){
 				cards = cards[cardsBool.indexOf(false)];
