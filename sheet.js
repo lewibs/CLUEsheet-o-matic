@@ -42,6 +42,10 @@ sheet.think = function() {
 	//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 }	//check if two of the three cards are known and the second player does not have them two then the third is known
 
+sheet.didNotAnswer = function() {
+	
+}
+
 sheet.ifTwoFalse = function(){
 	let cards;
 	let cardsBool;
