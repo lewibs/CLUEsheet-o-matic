@@ -35,14 +35,57 @@ sheet.key = {
 	
 //thinking stuff	
 sheet.think = function() {
-	this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
-	this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
-	this.ifTwoTrue(); //this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
-	//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
-	this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
-	this.cardKnown(); //this checks if that card is known and marks the row x if it is
+	for (let i = 0 ; i < 2; i++ ) { //some of these are dependent on order and rather then figure out the optimal order and possibly have contradictions i just ran it twice
+		this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
+		this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
+		this.ifTwoTrue(); //this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
+		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
+		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
+		this.cardKnown(); //this checks if that card is known and marks the row x if it is
+	}
 }
 
+sheet.samePlayer = function() {
+	let cards;
+	let playerInd;
+	let cardsBool;
+	for (let i = 0 ; i < this.log.length ; i++) {
+		if (this.log[i].length >= 6) { // does not run for K type
+			cards = this.log[i];
+			playerInd = cards[0]-1;
+			if (cards[0] == cards[5]) {
+				if (this.countPlayerFor(playerInd,yesCard) == this.players[playerInd][1]) { //only runs if it loops back and if all of the players cards are known
+					cards = [cards[2],cards[3],cards[4]];
+					cardsBool = [this.getCardMark(cards[0],playerInd) == yesCard,
+								 this.getCardMark(cards[1],playerInd) == yesCard,
+								 this.getCardMark(cards[2],playerInd) == yesCard
+								];
+								
+					if(cardsBool.filter(Boolean).length == 2){
+						cards = cards[cardsBool.indexOf(false)];
+						for (let j = 0 ; j < this.rooms[0].length; j++) {
+							this.mark(cards,j,answerCard);
+						}
+					}
+				} else { //same thing as above but with a maybe
+					cards = [cards[2],cards[3],cards[4]];
+					cardsBool = [(this.getCardMark(cards[0],playerInd) == yesCard || this.getCardMark(cards[0],playerInd) == noCard),
+								 (this.getCardMark(cards[1],playerInd) == yesCard || this.getCardMark(cards[1],playerInd) == noCard),
+								 (this.getCardMark(cards[2],playerInd) == yesCard || this.getCardMark(cards[2],playerInd) == noCard)
+								];
+								
+					if(cardsBool.filter(Boolean).length == 2){
+						cards = cards[cardsBool.indexOf(false)];
+						this.mark(cards,playerInd,maybeCard);
+					}
+					
+					//can possibly do stuff here for if X O null or X O ?
+					
+				}
+			}
+		}
+	}
+}
 
 sheet.ifTwoTrue = function() {
 	let cards;
@@ -90,9 +133,9 @@ sheet.ifTwoFalse = function(){
 				cards = [cards[2],cards[3],cards[4]];
 				console.log(cards[0] + " " + cards[1]  + " " + cards[2]);
 				console.log(playerInd);
-				cardsBool = [this.getCardValue(cards[0],playerInd) == noCard,
-							 this.getCardValue(cards[1],playerInd) == noCard,
-							 this.getCardValue(cards[2],playerInd) == noCard
+				cardsBool = [this.getCardMark(cards[0],playerInd) == noCard,
+							 this.getCardMark(cards[1],playerInd) == noCard,
+							 this.getCardMark(cards[2],playerInd) == noCard
 							];
 				//check if two are false and return the third
 				if(cardsBool.filter(Boolean).length == 2){
@@ -207,7 +250,7 @@ sheet.readCards = function() {
 	}
 }
 
-sheet.getCardValue = function(card,playerInd) {
+sheet.getCardMark = function(card,playerInd) {
 	let cardInd = this.key[card];
 	if (cardInd > 11) {
 		cardInd = cardInd - 12;
@@ -235,7 +278,9 @@ sheet.mark = function(card, playerInd, mark) {
 
 
 sheet.suspects.mark = function (cardInd, playerInd, mark) {
-	if (this[cardInd][playerInd] == null) {
+	if (mark == answerCard) {
+		this[cardInd][playerInd] = mark;
+	} else if (this[cardInd][playerInd] == null) {
 		this[cardInd][playerInd] = mark;
 	} else if (this[cardInd][playerInd] == maybeCard) {
 		this[cardInd][playerInd] = mark;
@@ -245,7 +290,9 @@ sheet.suspects.mark = function (cardInd, playerInd, mark) {
 }
 
 sheet.weapons.mark = function (cardInd, playerInd, mark) {
-	if (this[cardInd][playerInd] == null) {
+	if (mark == answerCard) {
+		this[cardInd][playerInd] = mark;
+	} else if (this[cardInd][playerInd] == null) {
 		this[cardInd][playerInd] = mark;
 	} else if (this[cardInd][playerInd] == maybeCard) {
 		this[cardInd][playerInd] = mark;
@@ -255,7 +302,9 @@ sheet.weapons.mark = function (cardInd, playerInd, mark) {
 }
 
 sheet.rooms.mark = function (cardInd, playerInd, mark) {
-	if (this[cardInd][playerInd] == null) {
+	if (mark == answerCard) {
+		this[cardInd][playerInd] = mark;
+	} else if (this[cardInd][playerInd] == null) {
 		this[cardInd][playerInd] = mark;
 	} else if (this[cardInd][playerInd] == maybeCard) {
 		this[cardInd][playerInd] = mark;
