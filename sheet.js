@@ -38,12 +38,22 @@ sheet.think = function() {
 	this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
 	this.cardKnown(); //this checks if that card is known and marks the row x if it is
 	this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known
-	//this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
+	this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
 	//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 }	//check if two of the three cards are known and the second player does not have them two then the third is known
 
 sheet.didNotAnswer = function() {
-	
+	let que;
+	let cards = this.log[this.log.length - 1];
+	if (cards[1] == guessMade) {
+		que = makeQue(cards[0]-1); //minus one for player index
+		que.shift(); que.pop(); que.splice(que.indexOf(cards[5]-1)); //minus one for player index
+		for (let i = 0 ; i < que.length ; i++) {
+			this.mark(cards[2],que[i],noCard);
+			this.mark(cards[3],que[i],noCard);
+			this.mark(cards[4],que[i],noCard);
+		}
+	}
 }
 
 sheet.ifTwoFalse = function(){
