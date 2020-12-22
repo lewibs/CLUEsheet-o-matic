@@ -10,9 +10,7 @@ logic if the blank spots left are equal to the number of cards those are the pla
 5 JK 3 mp cm ms
 6 GD 3 mg ro wr
 
-answer: lp pp lo
-
-game 1:
+game 1 answer: lp pp lo
 1 k mw li ha
 1 g ms cs ba 2 cs
 2 g ms cs di 3
