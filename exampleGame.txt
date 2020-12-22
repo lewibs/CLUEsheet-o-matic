@@ -1,6 +1,8 @@
 strategies:
 guessing push back past the questionmarks
 guessing if there is just a question mark in that row guess it
+logic past check newest g with past ones and look if a person how one of the 4 cards in 2 guesses
+
 change the card reading for marking the board to read from the log rather then cards
 
 1 BL 3 mw li ha
