@@ -35,16 +35,15 @@ sheet.key = {
 	
 //thinking stuff	
 sheet.think = function() {
-	//for (let i = 0 ; i < 2; i++ ) { //some of these are dependent on order and rather then figure out the optimal order and possibly have contradictions i just ran it twice
+	for (let i = 0 ; i < 2; i++ ) { //some of these are dependent on order and rather then figure out the optimal order and possibly have contradictions i just ran it twice
 		this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known		
 		this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
-		this.ifTwoTrue(); //this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
 		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
 		this.playerAllUnknown(); //this counts the unknown and if that is equal to 21 - 3 then it knows those 3 are the known cards
 		this.cardKnown(); //this checks if that card is known and marks the row x if it is
 		this.fullNoCard(); //this checks if this row is an answer
-	//}
+	}
 }
 
 sheet.fullNoCard = function() {
@@ -101,26 +100,28 @@ sheet.samePlayer = function() {
 	}
 }
 
-sheet.ifTwoTrue = function() {
-	let cards;
-	let cardsBool;
-	let playerInd;
-	for (let i = 0 ; i < this.log.length ; i++) {
-		if(this.log[i][0] != this.log[i][5] && this.log[i].length == 6) { //this only runs if a card is not shown in that example and it did not loop to the first player as it trys to find out what was shown which is why 6 is used
-			cards = [this.log[i][2],this.log[i][3],this.log[i][4]];
-			cardsBool = [this.countCardFor(cards[0],yesCard)==1,
-						 this.countCardFor(cards[1],yesCard)==1,
-						 this.countCardFor(cards[2],yesCard)==1
-						];
-			playerInd = this.log[i][5] - 1;
-			//check if two are known and return the third
-			if(cardsBool.filter(Boolean).length == 2){
-				cards = cards[cardsBool.indexOf(false)];
-				this.mark(cards,playerInd,yesCard);
-			}
-		}
-	}
-}
+//this is broken and having logical issues
+//this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
+//sheet.ifTwoTrue = function() {
+//	let cards;
+//	let cardsBool;
+//	let playerInd;
+//	for (let i = 0 ; i < this.log.length ; i++) {
+//		if(this.log[i][0] != this.log[i][5] && this.log[i].length == 6) { //this only runs if a card is not shown in that example and it did not loop to the first player as it trys to find out what was shown which is why 6 is used
+//			cards = [this.log[i][2],this.log[i][3],this.log[i][4]];
+//			cardsBool = [this.countCardFor(cards[0],yesCard)==1,
+//						 this.countCardFor(cards[1],yesCard)==1,
+//						 this.countCardFor(cards[2],yesCard)==1
+//						];
+//			playerInd = this.log[i][5] - 1;
+//			//check if two are known and return the third
+//			if(cardsBool.filter(Boolean).length == 2){
+//				cards = cards[cardsBool.indexOf(false)];
+//				this.mark(cards,playerInd,yesCard);
+//			}
+//		}
+//	}
+//}
 
 sheet.didNotAnswer = function() {
 	let que;

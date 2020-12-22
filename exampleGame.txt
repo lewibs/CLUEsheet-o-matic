@@ -18,4 +18,4 @@ game 1 answer: lp pp lo
 4 g ms ro di 5
 5 g mp lp bi 2
 6 g mw ro ki 1
-1 g mp kn di 3 di bad logic gave 3 ms and 5 ro
+1 g mp kn di 3 di bad logic gave 3 ms. 1 li, and 5 ro
