@@ -42,6 +42,19 @@ sheet.think = function() {
 		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
 		this.cardKnown(); //this checks if that card is known and marks the row x if it is
+		this.fullNoCard(); //this checks if this row is an answer
+	}
+}
+
+sheet.fullNoCard = function() {
+	let card;
+	for (let i = 0 ; i < size(sheet.key); i++) { //loop though all the cards
+		card = getKeyByValue(sheet.key,i);
+		if(this.countCardFor(card,noCard) == this.rooms[0].length){ //check if every column has noCard	
+			for(let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) { //loop though the row and lable everything as answer card
+				this.mark(card,playerInd,answerCard);
+			}
+		}
 	}
 }
 
