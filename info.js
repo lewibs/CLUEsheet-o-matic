@@ -5,13 +5,17 @@ info.answer = "no answer";
 info.currentPlayer = 1;
 
 info.suggestedMove = function() {
-	let suspect = Math.floor((Math.random() * 6) + 1);
-	let weapon = Math.floor((Math.random() * 6) + 7);
-	let room = Math.floor((Math.random() * 6) + 13);
+	let suspect = Math.floor((Math.random() * 6) + 0);
+	let weapon = Math.floor((Math.random() * 6) + 6);
+	let room = Math.floor((Math.random() * 6) + 12);
 	
 	suspect = getKeyByValue(sheet.key, suspect);
 	weapon = getKeyByValue(sheet.key, weapon);
 	room = getKeyByValue(sheet.key, room);
+	
+	if (sheet.cards[1] == guessMade) {
+		this.playerIncrease();
+	}
 	
 	this.move = this.currentPlayer + " g " + " " + suspect + " " + weapon + " " + room;
 }

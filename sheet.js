@@ -41,8 +41,23 @@ sheet.think = function() {
 		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
 		this.playerAllUnknown(); //this counts the unknown and if that is equal to 21 - 3 then it knows those 3 are the known cards
+		this.checkRowForNull(); // this checks to see if the last thing in that row of noCard has been marked if not then it puts a question mark there
 		this.cardKnown(); //this checks if that card is known and marks the row x if it is
 		this.fullNoCard(); //this checks if this row is an answer
+	}
+}
+
+sheet.checkRowForNull = function() {
+	let card;
+	for (let i = 0 ; i < size(sheet.key); i++) { //loop though all the cards
+		card = getKeyByValue(sheet.key,i);
+		if(this.countCardFor(card,noCard) == this.rooms[0].length - 1){ //check if every column has noCard	
+			for(let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) { //loop though the row and lable everything as answer card
+				if (this.getCardMark(card, playerInd) == null) {
+					this.mark(card,playerInd,maybeCard);
+				}
+			}
+		}
 	}
 }
 
@@ -140,7 +155,7 @@ sheet.didNotAnswer = function() {
 sheet.ifTwoFalse = function(){
 	let cards;
 	let cardsBool;
-	for (let i = 0 ; i < this.log.length; i++){
+	for (let i = 0 ; i < this.log.length; i++){ //goes through the entire log
 		if(this.log[i].length == 6){ //if it is 6 then the format is 1 g cd cd cd 5
 			cards = this.log[i];
 			if(cards[0] != cards[5]){ //makes sure that it was not a loop around. as it is possible with a loop around that the player has all three cards

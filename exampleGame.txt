@@ -1,7 +1,9 @@
 strategies:
-when guessing push back past the questionmarks
+guessing push back past the questionmarks
+guessing if there is just a question mark in that row guess it
 logic past check newest g with past ones and look if a person how one of the 4 cards in 2 guesses
-logic if the blank spots left are equal to the number of cards those are the players cards
+
+change the card reading for marking the board to read from the log rather then cards
 
 1 BL 3 mw li ha
 2 LS 3 cs ki bi
@@ -18,4 +20,10 @@ game 1 answer: lp pp lo
 4 g ms ro di 5
 5 g mp lp bi 2
 6 g mw ro ki 1
-1 g mp kn di 3 di bad logic gave 3 ms. 1 li, and 5 ro
+1 g mp kn di 3 di
+2 g pp kn bi 4
+3 g mp re di 5
+4 g mw wr ki 6
+5 g mg kn ki 6
+6 g mg wr co 4
+1 g mp wr co 4 co
