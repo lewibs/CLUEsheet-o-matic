@@ -1,8 +1,6 @@
 strategies:
 guessing push back past the questionmarks
 guessing if there is just a question mark in that row guess it
-logic past check newest g with past ones and look if a person how one of the 4 cards in 2 guesses
-
 change the card reading for marking the board to read from the log rather then cards
 
 1 BL 3 mw li ha
@@ -27,3 +25,14 @@ game 1 answer: lp pp lo
 5 g mg kn ki 6
 6 g mg wr co 4
 1 g mp wr co 4 co
+
+
+
+
+
+1 k ki li ba ro kn
+1 g ms ro lo 3 ms
+5 g mp co lp
+1 g mp lp co 2 co
+2 g cm cs di 4
+3 g mp lp lo 3 should not have given mp

@@ -186,7 +186,7 @@ sheet.playerAllKnown = function() {
 sheet.playerAllUnknown = function() {
 	for (let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) {
 		if (this.countPlayerFor(playerInd,null) + this.countPlayerFor(playerInd,maybeCard) == this.players[playerInd][1]) { //counts the Unknown cards in that players index and checks it with how many cards they have.
-			this.markCol(playerInd,noCard);
+			this.markCol(playerInd,yesCard);
 		}
 	}
 }
@@ -254,19 +254,25 @@ sheet.countPlayerFor = function(playerInd,mark) {
 
 //normal sheet managment
 
-sheet.getCards = function() {
-	this.cards = document.getElementById('cards').value;
-	this.cards = this.cards.split(" ");
-	this.addToLog(this.cards);
+sheet.storeCards = function() {
+	let cards = document.getElementById('cards').value;
+	if (cards != ""){
+		cards = cards.split(" ");
+		this.addToLog(cards);
+	}
 }
 
 sheet.addToLog = function(cards) {
 	this.log[this.log.length] = cards;
 }
 
-sheet.readCards = function() {
+sheet.getLog = function(logIndex) {
+	return this.log[logIndex];
+}
+
+sheet.readCards = function(mostRecentLog) {
 	let playerInd;
-	this.getCards();
+	this.cards = this.getLog(mostRecentLog);
 	let type = this.cards[1];
 	if (type == knownCard){
 		playerInd = this.cards[0] - 1;
@@ -299,7 +305,7 @@ sheet.getCardMark = function(card,playerInd) {
 	}
 }
 
-sheet.mark = function(card, playerInd, mark) {
+sheet.mark = function(card, playerInd, mark){
 	let cardInd = this.key[card];
 	if (cardInd > 11) {
 		cardInd = cardInd - 12;
@@ -312,40 +318,41 @@ sheet.mark = function(card, playerInd, mark) {
 	}
 }
 
-
-sheet.suspects.mark = function (cardInd, playerInd, mark) {
-	if (mark == answerCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == null) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == maybeCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-		this[cardInd][playerInd] = mark;
-	}		
-}
-
-sheet.weapons.mark = function (cardInd, playerInd, mark) {
-	if (mark == answerCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == null) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == maybeCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-		this[cardInd][playerInd] = mark;
+sheet.resetMark = function() {
+	this.suspects.mark = function (cardInd, playerInd, mark) {
+		if (mark == answerCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == null) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == maybeCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
+			this[cardInd][playerInd] = mark;
+		}		
 	}
-}
 
-sheet.rooms.mark = function (cardInd, playerInd, mark) {
-	if (mark == answerCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == null) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == maybeCard) {
-		this[cardInd][playerInd] = mark;
-	} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-		this[cardInd][playerInd] = mark;
+	this.weapons.mark = function (cardInd, playerInd, mark) {
+		if (mark == answerCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == null) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == maybeCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
+			this[cardInd][playerInd] = mark;
+		}
+	}
+
+	this.rooms.mark = function (cardInd, playerInd, mark) {
+		if (mark == answerCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == null) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == maybeCard) {
+			this[cardInd][playerInd] = mark;
+		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
+			this[cardInd][playerInd] = mark;
+		}
 	}
 }
 
