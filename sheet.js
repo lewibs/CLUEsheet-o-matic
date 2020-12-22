@@ -47,6 +47,48 @@ sheet.think = function() {
 	}
 }
 
+// this checks every single element against eachother and looks to see if there are any points where k k u k k u can be checked against eachother to get k
+//i relized this adds no benifit as ifTwoFalse does the same thing when looped through everything
+//sheet.readHistory41 = function() {
+//	let cards1;
+//	let cards2;
+//	let cardsBool;
+//	let matchInd;
+//	let card;
+//	let fullCards;
+//	let playerInd;
+//	for(let i = 0 ; i < this.log.length; i++) { //go through the log
+//		if(this.log[i][1] == guessMade) { //makes sure that it is checking a guess
+//			for(let j = 0 ; j < this.log.length; j++) { //go through the log
+//				if (this.log[j][1] == guessMade) { //makes sure it is checking a guess
+//					cards1 = [this.log[i][2],this.log[i][3],this.log[i][4]];
+//					cards2 = [this.log[j][2],this.log[j][3],this.log[j][4]];
+//					cardsBool = checkForMatch(cards1,cards2);
+//					if(this.log[i][5] == this.log[j][5] && cardsBool.filter(Boolean).length == 1){//needs to have the same end player and also there can only be one matching card
+//						playerInd = this.log[i][5];
+//						matchInd = [cardsBool.indexOf(true)];
+//						card = cards[matchInd];
+//						cards1 = cards1.filter(x => x != card);
+//						cards2 = cards1.filter(x => x != card);
+//						cards2.push(card);
+//						cards1.push(cards2);
+//						for (let k = 0; k < cards1.length; k++) {
+//							cardsBool = [];
+//							console.log(cards1[k]);
+//							console.log(playerInd);
+//							cardsBool[k] = this.getCardMark(cards1[k],playerInd) == noCard;
+//							if (cardsBool.filter(Boolean).length == 4) {
+//								card = cards1[cardsBool.indexOf(false)];
+//								this.mark(card,playerInd,yesCard);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
+
 sheet.checkRowForNull = function() {
 	let card;
 	for (let i = 0 ; i < size(sheet.key); i++) { //loop though all the cards

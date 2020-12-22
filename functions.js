@@ -7,7 +7,6 @@ function checkForMatch(array1,array2) {
 	return array;
 }
 
-
 function makeArray(r,c) {
 	// Create a one dimensional array 
 	// capable of storing 3 objects
