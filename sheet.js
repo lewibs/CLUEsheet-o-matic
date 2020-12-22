@@ -41,6 +41,7 @@ sheet.think = function() {
 		this.ifTwoTrue(); //this checks that two of the guessed cards are known by everyone but the player showing making the third the shown card
 		this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
 		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
+		this.playerAllUnknown(); //this counts the unknown and if that is equal to 21 - 3 then it knows those 3 are the known cards
 		this.cardKnown(); //this checks if that card is known and marks the row x if it is
 		this.fullNoCard(); //this checks if this row is an answer
 	}
@@ -122,7 +123,6 @@ sheet.ifTwoTrue = function() {
 }
 
 sheet.didNotAnswer = function() {
-	console.log(125);
 	let que;
 	let cards = this.log[this.log.length - 1];
 	if (cards[1] == guessMade) {
@@ -145,8 +145,6 @@ sheet.ifTwoFalse = function(){
 			if(cards[0] != cards[5]){ //makes sure that it was not a loop around. as it is possible with a loop around that the player has all three cards
 				playerInd = cards[5] - 1;
 				cards = [cards[2],cards[3],cards[4]];
-				console.log(cards[0] + " " + cards[1]  + " " + cards[2]);
-				console.log(playerInd);
 				cardsBool = [this.getCardMark(cards[0],playerInd) == noCard,
 							 this.getCardMark(cards[1],playerInd) == noCard,
 							 this.getCardMark(cards[2],playerInd) == noCard
@@ -164,6 +162,14 @@ sheet.ifTwoFalse = function(){
 sheet.playerAllKnown = function() {
 	for (let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) {
 		if (this.countPlayerFor(playerInd,yesCard) == this.players[playerInd][1]) { //counts the known cards in that players index and checks it with how many cards they have.
+			this.markCol(playerInd,noCard);
+		}
+	}
+}
+
+sheet.playerAllUnknown = function() {
+	for (let playerInd = 0 ; playerInd < this.rooms[0].length; playerInd++) {
+		if (this.countPlayerFor(playerInd,null) + this.countPlayerFor(playerInd,maybeCard) == this.players[playerInd][1]) { //counts the Unknown cards in that players index and checks it with how many cards they have.
 			this.markCol(playerInd,noCard);
 		}
 	}
@@ -260,7 +266,7 @@ sheet.readCards = function() {
 		playerInd = this.cards[5] - 1;
 		this.mark(this.cards[6],playerInd,yesCard);
 	} else {
-		console.log("nothing happened");
+		//nothing happens
 	}
 }
 
