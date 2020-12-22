@@ -5,7 +5,6 @@ game.start = function() {
 	sheet.getPlayers();
 	sheet.updatePlayers();
 	sheet.clearBlankPlayers();
-	sheet.readCards();
 	game.update();
 	game.toggleVisability();
 }
