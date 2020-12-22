@@ -1,3 +1,13 @@
+function checkForMatch(array1,array2) {
+	//arrays must be equal length
+	let array = [];
+	for (let i = 0 ; i < array1.length ; i++){
+		array[i] = array1[i] == array2[i];
+	}
+	return array;
+}
+
+
 function makeArray(r,c) {
 	// Create a one dimensional array 
 	// capable of storing 3 objects
