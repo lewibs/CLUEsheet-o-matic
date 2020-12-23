@@ -326,8 +326,8 @@ sheet.resetMark = function() {
 			this[cardInd][playerInd] = mark;
 		} else if (this[cardInd][playerInd] == maybeCard) {
 			this[cardInd][playerInd] = mark;
-		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-			this[cardInd][playerInd] = mark;
+		} else {
+			//do nothing
 		}		
 	}
 
@@ -338,9 +338,9 @@ sheet.resetMark = function() {
 			this[cardInd][playerInd] = mark;
 		} else if (this[cardInd][playerInd] == maybeCard) {
 			this[cardInd][playerInd] = mark;
-		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-			this[cardInd][playerInd] = mark;
-		}
+		} else {
+			//do nothing
+		}	
 	}
 
 	this.rooms.mark = function (cardInd, playerInd, mark) {
@@ -350,9 +350,9 @@ sheet.resetMark = function() {
 			this[cardInd][playerInd] = mark;
 		} else if (this[cardInd][playerInd] == maybeCard) {
 			this[cardInd][playerInd] = mark;
-		} else if (this[cardInd][playerInd] == noCard && mark == yesCard) {
-			this[cardInd][playerInd] = mark;
-		}
+		} else {
+			//do nothing
+		}	
 	}
 }
 
