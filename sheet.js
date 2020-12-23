@@ -36,14 +36,14 @@ sheet.key = {
 //thinking stuff	
 sheet.think = function() {
 	for (let i = 0 ; i < 2; i++ ) { //some of these are dependent on order and rather then figure out the optimal order and possibly have contradictions i just ran it twice
-		//this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known		
-		//this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
-		//this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
-		//this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
-		//this.playerAllUnknown(); //this counts the unknown and if that is equal to 21 - 3 then it knows those 3 are the known cards
-		//this.checkRowForNull(); // this checks to see if the last thing in that row of noCard has been marked if not then it puts a question mark there
-		//this.cardKnown(); //this checks if that card is known and marks the row x if it is
-		//this.fullNoCard(); //this checks if this row is an answer
+		this.ifTwoFalse();//check for if the player showing the card has two of the cards and are unknown making the third the card they have known		
+		this.didNotAnswer(); //they dont have any of the cards otherwise they would have answered
+		//this should be rechecked //this.samePlayer();//check if it loops back to the same player if all of their cards are known and the two others were known this is the mistery card if 
+		this.playerAllKnown(); //this checks if all of the cards in that players hand are known and marks the column x if it is
+		//this should be rechecked //this.playerAllUnknown(); //this counts the unknown and if that is equal to 21 - 3 then it knows those 3 are the known cards
+		//this should be rechecked //this.checkRowForNull(); // this checks to see if the last thing in that row of noCard has been marked if not then it puts a question mark there
+		this.cardKnown(); //this checks if that card is known and marks the row x if it is
+		this.fullNoCard(); //this checks if this row is an answer
 	}
 }
 
